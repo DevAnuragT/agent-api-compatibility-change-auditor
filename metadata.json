@@ -1,0 +1,45 @@
+{
+  "slug": "api-compatibility-change-auditor",
+  "title": "API Compatibility Change Auditor",
+  "category": "API Governance",
+  "description": "Compares two endpoint contracts and flags removed or type-changed fields that need explicit breaking-change handling.",
+  "decision": "The change is compatible when prior fields remain with the same declared types; removed or changed fields are reported for version and migration review.",
+  "inputs": "The caller supplies previous and current endpoint-to-field-type maps, plus a declared semantic version change.",
+  "limitations": "This compares structural field names and types only. It cannot infer behavioral compatibility, wire-level coercion, or every consumer dependency.",
+  "good": {
+    "previous": {
+      "/v1/users": {
+        "id": "string",
+        "name": "string"
+      }
+    },
+    "current": {
+      "/v1/users": {
+        "id": "string",
+        "name": "string",
+        "email": "string"
+      }
+    },
+    "version_bump": "minor"
+  },
+  "bad": {
+    "previous": {
+      "/v1/users": {
+        "id": "string",
+        "name": "string"
+      }
+    },
+    "current": {
+      "/v1/users": {
+        "id": "integer"
+      }
+    },
+    "version_bump": "patch"
+  },
+  "body": "\n        old=payload.get(\"previous\"); new=payload.get(\"current\"); bump=payload.get(\"version_bump\")\n        if not isinstance(old,dict) or not isinstance(new,dict): raise ValueError(\"previous and current contracts must be objects\")\n        breaking=[]\n        for endpoint, fields in old.items():\n            if endpoint not in new: breaking.append(f\"removed endpoint {endpoint}\"); continue\n            for field, typ in fields.items():\n                if field not in new[endpoint]: breaking.append(f\"removed field {endpoint}.{field}\")\n                elif new[endpoint][field] != typ: breaking.append(f\"type changed {endpoint}.{field}: {typ} -> {new[endpoint][field]}\")\n        findings.extend(breaking)\n        if breaking and bump not in (\"major\", \"breaking\"): findings.append(\"breaking changes require major/breaking version bump\")\n        if not breaking and bump == \"major\": findings.append(\"major bump declared without detected structural breaking change; review rationale\")\n        ",
+  "runtime": "Python 3.9+ standard library",
+  "input_schema": {
+    "type": "object",
+    "description": "The caller supplies previous and current endpoint-to-field-type maps, plus a declared semantic version change."
+  }
+}

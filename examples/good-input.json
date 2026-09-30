@@ -1,0 +1,16 @@
+{
+  "previous": {
+    "/v1/users": {
+      "id": "string",
+      "name": "string"
+    }
+  },
+  "current": {
+    "/v1/users": {
+      "id": "string",
+      "name": "string",
+      "email": "string"
+    }
+  },
+  "version_bump": "minor"
+}

@@ -1,0 +1,14 @@
+{
+  "previous": {
+    "/v1/users": {
+      "id": "string",
+      "name": "string"
+    }
+  },
+  "current": {
+    "/v1/users": {
+      "id": "integer"
+    }
+  },
+  "version_bump": "patch"
+}

@@ -1,0 +1,11 @@
+spec_version: "0.1.0"
+name: api-compatibility-change-auditor
+version: 0.1.0
+description: "Compares two endpoint contracts and flags removed or type-changed fields that need explicit breaking-change handling."
+skills:
+  - api-compatibility-change-auditor-skill
+tools:
+  - audit-api-compatibility-change-auditor
+tags:
+  - "api-governance"
+  - evidence-driven
